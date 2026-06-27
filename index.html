@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>avo_sheep — คำสั่ง</title>
+<style>
+  :root{
+    --bg:#0e1014; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --text:#e7ebf2; --muted:#8b93a4; --mono:'Cascadia Code','JetBrains Mono','Consolas',monospace;
+    --control:#4ea1ff; --sabotage:#ff5c6c; --help:#46d39a; --test:#c98bff; --util:#ffba49;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',Tahoma,system-ui,sans-serif;line-height:1.55}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 80px}
+  h1{font-size:26px;margin:0 0 2px;display:flex;align-items:center;gap:10px}
+  h1 .sheep{font-size:30px}
+  .sub{color:var(--muted);margin:0 0 22px;font-size:14px}
+  .searchbar{position:sticky;top:0;background:linear-gradient(var(--bg) 70%,transparent);
+    padding:12px 0 14px;z-index:20}
+  .searchbox{position:relative}
+  #q{width:100%;padding:13px 44px 13px 42px;font-size:16px;border-radius:12px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);outline:none}
+  #q:focus{border-color:var(--control);box-shadow:0 0 0 3px #4ea1ff22}
+  .searchbox .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .searchbox .clr{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    color:var(--muted);cursor:pointer;border:0;background:none;font-size:18px;display:none}
+  /* autocomplete dropdown */
+  #ac{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--panel2);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none;z-index:30;
+    box-shadow:0 12px 30px #0008}
+  #ac div{padding:10px 14px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:14px}
+  #ac div .mono{font-family:var(--mono);color:var(--text)}
+  #ac div small{color:var(--muted);margin-left:auto}
+  #ac div.active,#ac div:hover{background:#2b3140}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+  .chip{padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);cursor:pointer;font-size:13px;user-select:none}
+  .chip.on{color:#0e1014;font-weight:600}
+  .chip[data-c=all].on{background:var(--text);border-color:var(--text)}
+  .chip[data-c=control].on{background:var(--control);border-color:var(--control)}
+  .chip[data-c=sabotage].on{background:var(--sabotage);border-color:var(--sabotage)}
+  .chip[data-c=help].on{background:var(--help);border-color:var(--help)}
+  .chip[data-c=test].on{background:var(--test);border-color:var(--test)}
+  .chip[data-c=util].on{background:var(--util);border-color:var(--util)}
+  .count{color:var(--muted);font-size:13px;margin:10px 2px}
+  .group{margin:18px 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .card{background:var(--panel);border:1px solid var(--line);border-left-width:4px;
+    border-radius:10px;padding:12px 15px;margin:8px 0;display:flex;gap:12px;align-items:flex-start}
+  .card.control{border-left-color:var(--control)}
+  .card.sabotage{border-left-color:var(--sabotage)}
+  .card.help{border-left-color:var(--help)}
+  .card.test{border-left-color:var(--test)}
+  .card.util{border-left-color:var(--util)}
+  .card .cmd{font-family:var(--mono);font-size:15px;color:#fff;white-space:nowrap}
+  .card .cmd .arg{color:var(--muted)}
+  .card .desc{color:var(--muted);font-size:14px;margin-top:3px}
+  .card .body{flex:1;min-width:0}
+  .tag{font-size:11px;padding:2px 9px;border-radius:999px;align-self:center;font-weight:600;white-space:nowrap}
+  .tag.control{background:#4ea1ff22;color:var(--control)}
+  .tag.sabotage{background:#ff5c6c22;color:var(--sabotage)}
+  .tag.help{background:#46d39a22;color:var(--help)}
+  .tag.test{background:#c98bff22;color:var(--test)}
+  .tag.util{background:#ffba4922;color:var(--util)}
+  .empty{text-align:center;color:var(--muted);padding:40px}
+  mark{background:#ffba4955;color:inherit;border-radius:3px}
+  .hint{color:var(--muted);font-size:12px;margin-top:8px}
+  kbd{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-family:var(--mono);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="sheep">🐑</span> avo_sheep — คำสั่ง</h1>
+  <p class="sub">เกมย้อมสีแกะ · พิมพ์ค้นหา แล้วกด <kbd>Tab</kbd>/<kbd>Enter</kbd> เติมคำ · คลิกหมวดเพื่อกรอง</p>
+
+  <div class="searchbar">
+    <div class="searchbox">
+      <span class="ic">🔍</span>
+      <input id="q" type="text" placeholder="ค้นหาคำสั่ง เช่น dye, เพิ่มแกะ, tnt, reset…" autocomplete="off" spellcheck="false">
+      <button class="clr" id="clr" title="ล้าง">✕</button>
+      <div id="ac"></div>
+    </div>
+    <div class="chips" id="chips">
+      <span class="chip on" data-c="all">ทั้งหมด</span>
+      <span class="chip" data-c="sabotage">แกล้ง</span>
+      <span class="chip" data-c="help">ช่วย</span>
+      <span class="chip" data-c="control">ตั้งค่า</span>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+const CATS = {
+  sabotage:'แกล้ง (ทำให้ยาก)', help:'ช่วย (ทำให้ง่าย)', control:'ตั้งค่า'
+};
+const CMDS = [
+  // ---- แกล้ง (sabotage) ----
+  {c:'sabotage', cmd:'/avos sabotage scale', arg:'<n>', desc:'เพิ่มแกะ n ตัว ฟาร์มกว้างขึ้น', kw:'สเกล เพิ่ม ขยาย แกะ scale แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage dump', arg:'<n>', desc:'เทแกะลงมาเพิ่มรัวๆ n ตัว', kw:'เทแกะ ทิ้ง เพิ่ม dump แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage eraser', arg:'<n>', desc:'ลบสีแกะที่ย้อมแล้ว n ตัว กลับเป็นขาว', kw:'ลบสี ยางลบ คืนขาว eraser แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage multiclick', arg:'<n>', desc:'ต้องคลิกขวา n ครั้งถึงย้อมแกะติด (ย้อมทีละชั้น)', kw:'คลิกหลายที multi click ยาก แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage recolor', desc:'สุ่มเปลี่ยนสีเป้าเป็นสีอื่น แกะคงสีเดิม ต้องย้อมใหม่หมด', kw:'เปลี่ยนสี recolor สุ่มสี เปลี่ยนเป้า แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage tnt', arg:'<n>', desc:'TNT ลงหัวแกะ n ตัว ระเบิด คืนเป็นขาว (ไม่พังพื้น)', kw:'ระเบิด tnt บอม แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage dragon', desc:'มังกรบินข้ามฟาร์ม ทุกคนดูมุมปะทะ ผ่านกลางแล้วล้างสีแกะขาวหมด', kw:'มังกร dragon reset รีเซ็ต บิน ปะทะ แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage rgb', arg:'<n>', desc:'เสกแกะรุ้ง n ตัว ย้อมไม่ได้ ต้องใช้กรรไกรตัดขน เดี๋ยวงอกขาวค่อยย้อม', kw:'รุ้ง rgb rainbow ตัดขน กรรไกร แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage big', arg:'<n>', desc:'เสกแกะยักษ์ n ตัว ตัวใหญ่ ต้องย้อมหลายรอบกว่าจะติด', kw:'ยักษ์ ใหญ่ big giant แกล้ง'},
+  // ---- ช่วย (help) ----
+  {c:'help', cmd:'/avos help autodye', arg:'<n>', desc:'ย้อมสีแกะให้ n ตัวอัตโนมัติ (สีของรอบนั้น)', kw:'ย้อมให้ auto dye ช่วย'},
+  {c:'help', cmd:'/avos help evoker', arg:'<ตัว> <แกะ/ตัว>', desc:'เสก Evoker ร่ายเวทย้อมแกะขาวให้ เลือกจำนวนคนร่าย + แกะต่อคน', kw:'evoker ร่ายเวท wololo ย้อม ช่วย'},
+  {c:'help', cmd:'/avos help wolves', arg:'<ตัว> <ตัว/ตัว>', desc:'หมาป่ามากินแกะ เลือกจำนวนหมา + แกะต่อตัว', kw:'หมาป่า wolf กินแกะ ลดแกะ ช่วย'},
+  {c:'help', cmd:'/avos help winged', desc:'ตัวมีปีกลงมาย้อมแกะให้หมด (ชนะรอบ)', kw:'ปีก winged ย้อมหมด ชนะ ช่วย'},
+  // ---- ตั้งค่า (settings / control) ----
+  {c:'control', cmd:'/avos reset', desc:'รีสีรอบใหม่: แกะกลับขาวหมด + สุ่มสีใหม่ — เก็บจำนวน/ขนาดไว้', kw:'รีเซ็ต reset สีใหม่ รอบใหม่ ขาว ตั้งค่า'},
+  {c:'control', cmd:'/avos reset all', desc:'รีกลับค่าเริ่มต้นทั้งหมด + จำนวนแกะกลับเป็น base ที่ตั้งไว้', kw:'รีเซ็ต reset all default ค่าเริ่มต้น ตั้งค่า'},
+  {c:'control', cmd:'/avos setstart', arg:'<n>', desc:'ตั้งจำนวนแกะเริ่มต้น (base) — ชนะแล้วถ้าน้อยกว่านี้รีกลับมา ถ้ามากกว่าคงไว้', kw:'จำนวนเริ่ม setstart base แกะเริ่ม ตั้งค่า'},
+  {c:'control', cmd:'/avos setfull', arg:'<n>', desc:'ตั้งจำนวนแกะมากสุด (กันแลค) — เกินนี้เป็นตัวเลขล้วน', kw:'มากสุด setfull cap กันแลค full ตั้งค่า'},
+  {c:'control', cmd:'/avos time', arg:'<วินาที>', desc:'เวลานับถอยหลังหลังชนะ (เริ่มต้น 15)', kw:'เวลา countdown นับถอยหลัง ตั้งค่า'},
+  {c:'control', cmd:'/avos radius', arg:'<n>', desc:'ขนาดรั้วฟาร์มเริ่มต้น (เล็กสุด)', kw:'ขนาด รั้ว radius กว้าง ตั้งค่า'},
+  {c:'control', cmd:'/avos status', desc:'ดูสถานะสั้นๆ: รอบ, สีเป้า, จำนวนแกะ, ย้อมแล้ว', kw:'สถานะ status ตั้งค่า'},
+  {c:'control', cmd:'/avos info', desc:'ดูละเอียด: ขาว/ย้อมแล้ว/ผิดสี/รุ้ง/ยักษ์ + ขนาดรั้ว', kw:'ข้อมูล info รายละเอียด ตั้งค่า'},
+  {c:'control', cmd:'/avos start', desc:'เริ่มเกม (ปกติ auto-start อยู่แล้ว)', kw:'เริ่ม start ตั้งค่า'},
+  {c:'control', cmd:'/avos stop', desc:'หยุดเกม ลบแกะ ซ่อน overlay', kw:'หยุด stop จบ ตั้งค่า'},
+  {c:'control', cmd:'/avos save', desc:'เซฟ config เดี๋ยวนี้ (ปกติ autosave ทุก 5 นาที)', kw:'เซฟ save บันทึก ตั้งค่า'},
+  {c:'control', cmd:'/avos reload', desc:'โหลด config จากดิสก์ใหม่ (หลังแก้ farm.yml)', kw:'โหลด reload config ตั้งค่า'},
+  {c:'control', cmd:'/avos day', desc:'ตั้งเวลาเป็นกลางวัน', kw:'กลางวัน day เช้า ตั้งค่า'},
+  {c:'control', cmd:'/a', desc:'reload ปลั๊กอิน (เงียบ ไม่ขึ้นข้อความผู้เล่น)', kw:'reload รีโหลด ปลั๊กอิน ตั้งค่า'},
+];
+
+const list=document.getElementById('list'), q=document.getElementById('q'),
+      ac=document.getElementById('ac'), countEl=document.getElementById('count'),
+      clr=document.getElementById('clr');
+let activeCat='all', acItems=[], acIdx=-1;
+
+function esc(s){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+function hl(s,term){ if(!term) return esc(s);
+  const i=s.toLowerCase().indexOf(term.toLowerCase());
+  if(i<0) return esc(s);
+  return esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+term.length))+'</mark>'+esc(s.slice(i+term.length));
+}
+function matches(cmd,term){
+  if(activeCat!=='all' && cmd.c!==activeCat) return false;
+  if(!term) return true;
+  const hay=(cmd.cmd+' '+(cmd.arg||'')+' '+cmd.desc+' '+(cmd.kw||'')).toLowerCase();
+  return hay.includes(term.toLowerCase());
+}
+function render(){
+  const term=q.value.trim();
+  const shown=CMDS.filter(c=>matches(c,term));
+  countEl.textContent=shown.length+' คำสั่ง'+(term?(' · ค้นหา "'+term+'"'):'');
+  if(!shown.length){ list.innerHTML='<div class="empty">ไม่พบคำสั่งที่ตรง 🐑</div>'; return; }
+  let html='', cur='';
+  for(const c of shown){
+    if(c.c!==cur){ cur=c.c; html+='<div class="group">'+CATS[c.c]+'</div>'; }
+    html+='<div class="card '+c.c+'"><div class="body">'
+      +'<div class="cmd">'+hl(c.cmd,term)+(c.arg?' <span class="arg">'+hl(c.arg,term)+'</span>':'')+'</div>'
+      +'<div class="desc">'+hl(c.desc,term)+'</div></div>'
+      +'<span class="tag '+c.c+'">'+CATS[c.c].split(' ')[0]+'</span></div>';
+  }
+  list.innerHTML=html;
+  clr.style.display=term?'block':'none';
+}
+// autocomplete: suggest matching command names + keywords
+function buildAC(){
+  const term=q.value.trim().toLowerCase();
+  if(!term){ ac.style.display='none'; return; }
+  const pool=[];
+  for(const c of CMDS){
+    if(activeCat!=='all'&&c.c!==activeCat) continue;
+    const name=c.cmd+(c.arg?' '+c.arg:'');
+    if((c.cmd+' '+(c.kw||'')).toLowerCase().includes(term)) pool.push({t:c.cmd,d:c.desc.slice(0,38)});
+  }
+  acItems=pool.slice(0,7); acIdx=-1;
+  if(!acItems.length){ ac.style.display='none'; return; }
+  ac.innerHTML=acItems.map((it,i)=>'<div data-i="'+i+'"><span class="mono">'+esc(it.t)+'</span><small>'+esc(it.d)+'</small></div>').join('');
+  ac.style.display='block';
+}
+function applyAC(i){ if(i<0||i>=acItems.length) return; q.value=acItems[i].t; ac.style.display='none'; render(); }
+
+q.addEventListener('input',()=>{render();buildAC();});
+q.addEventListener('keydown',e=>{
+  if(ac.style.display==='none'){ return; }
+  if(e.key==='ArrowDown'){e.preventDefault();acIdx=(acIdx+1)%acItems.length;paintAC();}
+  else if(e.key==='ArrowUp'){e.preventDefault();acIdx=(acIdx-1+acItems.length)%acItems.length;paintAC();}
+  else if(e.key==='Tab'||e.key==='Enter'){ if(acIdx>=0){e.preventDefault();applyAC(acIdx);} }
+  else if(e.key==='Escape'){ ac.style.display='none'; }
+});
+function paintAC(){ [...ac.children].forEach((d,i)=>d.classList.toggle('active',i===acIdx)); }
+ac.addEventListener('mousedown',e=>{ const d=e.target.closest('[data-i]'); if(d){e.preventDefault();applyAC(+d.dataset.i);} });
+document.addEventListener('click',e=>{ if(!e.target.closest('.searchbox')) ac.style.display='none'; });
+clr.addEventListener('click',()=>{ q.value='';render();ac.style.display='none';q.focus(); });
+
+document.getElementById('chips').addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  activeCat=chip.dataset.c;
+  [...document.querySelectorAll('.chip')].forEach(c=>c.classList.toggle('on',c===chip));
+  render();buildAC();
+});
+
+render();
+</script>
+</body>
+</html>
