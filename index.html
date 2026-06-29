@@ -16,13 +16,13 @@
   .wrap{max-width:920px;margin:0 auto;padding:34px 18px 90px}
 
   /* hero */
-  .hero{text-align:center;margin-bottom:30px}
+  .hero{text-align:center;margin-bottom:26px}
   .hero .sheep{font-size:60px;line-height:1;filter:drop-shadow(0 6px 16px #0008)}
   .hero h1{font-size:30px;margin:8px 0 4px;letter-spacing:.5px}
   .hero p{color:var(--muted);margin:0;font-size:15px}
 
-  /* section */
-  .sec{margin:26px 0}
+  /* section heading */
+  .sec{margin:24px 0}
   .sec-h{display:flex;align-items:center;gap:10px;margin:0 2px 12px}
   .sec-h .dot{width:11px;height:11px;border-radius:50%}
   .sec-h h2{font-size:16px;margin:0;letter-spacing:.03em;text-transform:uppercase}
@@ -32,16 +32,16 @@
   .sec.help .dot{background:var(--help)} .sec.help h2{color:var(--help)}
   .sec.util .dot{background:var(--util)} .sec.util h2{color:var(--util)}
 
-  /* cards grid */
+  /* quick cards grid */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px}
   .card{background:var(--panel);border:1px solid var(--line);border-left-width:4px;
-    border-radius:12px;padding:13px 15px;cursor:pointer;transition:.13s;position:relative;overflow:hidden}
+    border-radius:12px;padding:13px 15px;cursor:pointer;transition:.13s;position:relative}
   .card:hover{transform:translateY(-2px);background:var(--panel2);border-color:#3a4150}
   .card:active{transform:translateY(0)}
-  .control .card{border-left-color:var(--control)}
-  .sabotage .card{border-left-color:var(--sabotage)}
-  .help .card{border-left-color:var(--help)}
-  .util .card{border-left-color:var(--util)}
+  .control .card,.card.control{border-left-color:var(--control)}
+  .sabotage .card,.card.sabotage{border-left-color:var(--sabotage)}
+  .help .card,.card.help{border-left-color:var(--help)}
+  .util .card,.card.util{border-left-color:var(--util)}
   .card .label{font-size:15px;font-weight:600;margin-bottom:7px}
   .card .cmd{font-family:var(--mono);font-size:13.5px;color:var(--muted);
     display:flex;align-items:center;gap:7px;word-break:break-all}
@@ -49,19 +49,46 @@
   .card .copyic{margin-left:auto;flex:none;opacity:.45;font-size:13px}
   .card:hover .copyic{opacity:.9}
 
-  /* all-commands button */
-  .more{display:flex;justify-content:center;margin-top:34px}
-  .more a{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
-    background:linear-gradient(135deg,#222838,#171a21);color:var(--text);
-    border:1px solid var(--line);border-radius:14px;padding:15px 26px;font-size:15.5px;font-weight:600;
-    transition:.15s;box-shadow:0 8px 24px #0006}
-  .more a:hover{border-color:var(--control);transform:translateY(-2px);box-shadow:0 12px 30px #0007}
-  .more a .ar{transition:.15s}
-  .more a:hover .ar{transform:translateX(4px)}
+  /* divider */
+  .divider{display:flex;align-items:center;gap:14px;margin:40px 0 8px;color:var(--muted);font-size:13px;
+    letter-spacing:.05em;text-transform:uppercase}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* search + chips (all-commands) */
+  .searchbar{position:sticky;top:0;background:linear-gradient(var(--bg) 72%,transparent);padding:12px 0 12px;z-index:20}
+  .searchbox{position:relative}
+  #q{width:100%;padding:13px 44px 13px 42px;font-size:16px;border-radius:12px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);outline:none}
+  #q:focus{border-color:var(--control);box-shadow:0 0 0 3px #4ea1ff22}
+  .searchbox .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .searchbox .clr{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    color:var(--muted);cursor:pointer;border:0;background:none;font-size:18px;display:none}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+  .chip{padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);cursor:pointer;font-size:13px;user-select:none}
+  .chip.on{color:#0e1014;font-weight:600}
+  .chip[data-c=all].on{background:var(--text);border-color:var(--text)}
+  .chip[data-c=control].on{background:var(--control);border-color:var(--control)}
+  .chip[data-c=sabotage].on{background:var(--sabotage);border-color:var(--sabotage)}
+  .chip[data-c=help].on{background:var(--help);border-color:var(--help)}
+  .count{color:var(--muted);font-size:13px;margin:8px 2px}
+  .group{margin:18px 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .row{background:var(--panel);border:1px solid var(--line);border-left-width:4px;border-radius:10px;
+    padding:12px 15px;margin:8px 0;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:.12s}
+  .row:hover{background:var(--panel2);border-color:#3a4150}
+  .row.control{border-left-color:var(--control)}
+  .row.sabotage{border-left-color:var(--sabotage)}
+  .row.help{border-left-color:var(--help)}
+  .row .rcmd{font-family:var(--mono);font-size:15px;color:#fff}
+  .row .rcmd .arg{color:var(--muted)}
+  .row .rdesc{color:var(--muted);font-size:14px;margin-top:3px}
+  .row .rbody{flex:1;min-width:0}
+  .row .copyic{opacity:.4;font-size:14px;align-self:center}
+  .row:hover .copyic{opacity:.9}
+  .empty{text-align:center;color:var(--muted);padding:36px}
+  mark{background:#ffba4955;color:inherit;border-radius:3px}
 
   .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
-
-  /* copied toast */
   #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
     background:var(--help);color:#06140d;font-weight:700;padding:11px 22px;border-radius:999px;
     font-size:14px;opacity:0;pointer-events:none;transition:.22s;box-shadow:0 10px 28px #0007;z-index:50}
@@ -74,36 +101,44 @@
   <div class="hero">
     <div class="sheep">🐑</div>
     <h1>avo_sheep</h1>
-    <p>เกมย้อมสีแกะ · แตะการ์ดเพื่อคัดลอกคำสั่ง</p>
+    <p>เกมย้อมสีแกะ · แตะคำสั่งเพื่อคัดลอก</p>
   </div>
 
-  <!-- ตั้งค่าเกม -->
+  <!-- ===== QUICK (landing) ===== -->
   <div class="sec control">
     <div class="sec-h"><span class="dot"></span><h2>ตั้งค่าเกม</h2></div>
     <div class="grid" id="g-control"></div>
   </div>
-
-  <!-- แกล้ง -->
   <div class="sec sabotage">
     <div class="sec-h"><span class="dot"></span><h2>แกล้ง</h2><span class="tip">ทำให้ยากขึ้น</span></div>
     <div class="grid" id="g-sabotage"></div>
   </div>
-
-  <!-- ช่วย -->
   <div class="sec help">
     <div class="sec-h"><span class="dot"></span><h2>ช่วย</h2><span class="tip">ทำให้ง่ายขึ้น</span></div>
     <div class="grid" id="g-help"></div>
   </div>
-
-  <!-- อื่นๆ -->
   <div class="sec util">
     <div class="sec-h"><span class="dot"></span><h2>อื่นๆ</h2></div>
     <div class="grid" id="g-util"></div>
   </div>
 
-  <div class="more">
-    <a href="commands.html">📖 ดูคำสั่งทั้งหมด <span class="ar">→</span></a>
+  <!-- ===== ALL COMMANDS ===== -->
+  <div class="divider">คำสั่งทั้งหมด</div>
+  <div class="searchbar">
+    <div class="searchbox">
+      <span class="ic">🔍</span>
+      <input id="q" type="text" placeholder="ค้นหาคำสั่ง เช่น dye, เพิ่มแกะ, tnt, reset…" autocomplete="off" spellcheck="false">
+      <button class="clr" id="clr" title="ล้าง">✕</button>
+    </div>
+    <div class="chips" id="chips">
+      <span class="chip on" data-c="all">ทั้งหมด</span>
+      <span class="chip" data-c="sabotage">แกล้ง</span>
+      <span class="chip" data-c="help">ช่วย</span>
+      <span class="chip" data-c="control">ตั้งค่า</span>
+    </div>
+    <div class="count" id="count"></div>
   </div>
+  <div id="list"></div>
 
   <div class="foot">เกมย้อมสีแกะ — สตรีมเมอร์เล่น ผู้ชมแกล้ง 🐑</div>
 </div>
@@ -111,10 +146,12 @@
 <div id="toast">คัดลอกแล้ว ✓</div>
 
 <script>
-const DATA = {
+// ---- quick landing cards ----
+const QUICK = {
   control: [
     {label:'เริ่มเล่นแกะกี่ตัว',   cmd:'/avos setstart 50'},
     {label:'แกะเยอะสุด (กันแลค)',   cmd:'/avos setfull 300'},
+    {label:'จอรูปคนส่งของขวัญ',     cmd:'/avos gift on'},
   ],
   sabotage: [
     {label:'เสกแกะ',          cmd:'/avos sabotage dump 1'},
@@ -135,30 +172,94 @@ const DATA = {
   ],
 };
 
-function cardHTML(it){
-  const m = it.cmd.replace(/(\s)(\d+|<[^>]+>)/g, '$1<span class="arg">$2</span>');
-  return '<div class="card" data-cmd="'+it.cmd+'">'
-    + '<div class="label">'+it.label+'</div>'
-    + '<div class="cmd"><span>'+m+'</span><span class="copyic">⧉</span></div>'
-    + '</div>';
-}
-for(const k in DATA){
-  document.getElementById('g-'+k).innerHTML = DATA[k].map(cardHTML).join('');
+// ---- full command list ----
+const CATS = {sabotage:'แกล้ง (ทำให้ยาก)', help:'ช่วย (ทำให้ง่าย)', control:'ตั้งค่า'};
+const CMDS = [
+  {c:'sabotage', cmd:'/avos sabotage scale', arg:'<n>', desc:'เพิ่มแกะ n ตัว ฟาร์มกว้างขึ้น', kw:'สเกล เพิ่ม ขยาย แกะ scale แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage dump', arg:'<n>', desc:'เทแกะลงมาเพิ่มรัวๆ n ตัว', kw:'เทแกะ ทิ้ง เพิ่ม dump แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage eraser', arg:'<n>', desc:'ลบสีแกะที่ย้อมแล้ว n ตัว กลับเป็นขาว', kw:'ลบสี ยางลบ คืนขาว eraser แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage multiclick', arg:'<n>', desc:'ต้องคลิกขวา n ครั้งถึงย้อมแกะติด', kw:'คลิกหลายที multi click ยาก แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage recolor', desc:'สุ่มเปลี่ยนสีเป้าเป็นสีอื่น ต้องย้อมใหม่หมด', kw:'เปลี่ยนสี recolor สุ่มสี เปลี่ยนเป้า แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage tnt', arg:'<n>', desc:'TNT ลงหัวแกะ n ตัว ระเบิด คืนเป็นขาว (ไม่พังพื้น)', kw:'ระเบิด tnt บอม ลบสี แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage dragon', desc:'มังกรบินข้ามฟาร์ม ผ่านกลางแล้วล้างสีแกะขาวหมด', kw:'มังกร dragon reset รีเซ็ต บิน แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage rgb', arg:'<n>', desc:'เสกแกะรุ้ง n ตัว ย้อมไม่ได้ ต้องใช้กรรไกรตัดขนก่อน', kw:'รุ้ง rgb rainbow ตัดขน กรรไกร แกล้ง'},
+  {c:'sabotage', cmd:'/avos sabotage big', arg:'<n>', desc:'เสกแกะยักษ์ n ตัว ตัวใหญ่ ต้องย้อมหลายรอบกว่าจะติด', kw:'ยักษ์ ใหญ่ big giant แกล้ง'},
+  {c:'help', cmd:'/avos help autodye', arg:'<n>', desc:'ย้อมสีแกะให้ n ตัวอัตโนมัติ (สีของรอบนั้น)', kw:'ย้อมให้ auto dye ช่วย'},
+  {c:'help', cmd:'/avos help evoker', arg:'<ตัว> <แกะ/ตัว>', desc:'เสก Evoker ร่ายเวทย้อมแกะขาวให้', kw:'evoker ร่ายเวท wololo ย้อม ช่วย'},
+  {c:'help', cmd:'/avos help wolves', arg:'<ตัว> <ตัว/ตัว>', desc:'หมาป่ามากินแกะ ลดจำนวน', kw:'หมาป่า wolf กินแกะ ลดแกะ ช่วย'},
+  {c:'help', cmd:'/avos help winged', desc:'ตัวมีปีกลงมาย้อมแกะให้หมด (ชนะรอบ)', kw:'ปีก winged ย้อมหมด ชนะ ช่วย'},
+  {c:'control', cmd:'/avos reset', desc:'รีสีรอบใหม่: แกะกลับขาว + สุ่มสีใหม่ — เก็บจำนวน/ขนาดไว้', kw:'รีเซ็ต reset สีใหม่ รอบใหม่ ขาว ตั้งค่า'},
+  {c:'control', cmd:'/avos reset all', desc:'รีกลับค่าเริ่มต้นทั้งหมด + จำนวนแกะกลับเป็น base', kw:'รีเซ็ต reset all default ค่าเริ่มต้น ตั้งค่า'},
+  {c:'control', cmd:'/avos setstart', arg:'<n>', desc:'ตั้งจำนวนแกะเริ่มต้น (base) — ชนะแล้วลด 50% ไม่ต่ำกว่านี้', kw:'จำนวนเริ่ม setstart base แกะเริ่ม ตั้งค่า'},
+  {c:'control', cmd:'/avos setfull', arg:'<n>', desc:'ตั้งจำนวนแกะมากสุด (กันแลค)', kw:'มากสุด setfull cap กันแลค full ตั้งค่า'},
+  {c:'control', cmd:'/avos gift', arg:'<on|off>', desc:'เปิด/ปิดจอรูปคนส่งของขวัญ 4 ทิศกลางแมพ (จำค่า)', kw:'gift ของขวัญ จอ โปรไฟล์ tiktok screen ตั้งค่า'},
+  {c:'control', cmd:'/avos time', arg:'<วินาที>', desc:'เวลานับถอยหลังหลังชนะ (เริ่มต้น 15)', kw:'เวลา countdown นับถอยหลัง ตั้งค่า'},
+  {c:'control', cmd:'/avos radius', arg:'<n>', desc:'ขนาดรั้วฟาร์มเริ่มต้น', kw:'ขนาด รั้ว radius กว้าง ตั้งค่า'},
+  {c:'control', cmd:'/avos status', desc:'ดูสถานะสั้นๆ: รอบ, สีเป้า, จำนวนแกะ', kw:'สถานะ status ตั้งค่า'},
+  {c:'control', cmd:'/avos info', desc:'ดูละเอียดในเกม: ขาว/ย้อมแล้ว/รุ้ง/ยักษ์ + ขนาดรั้ว', kw:'ข้อมูล info รายละเอียด ตั้งค่า'},
+  {c:'control', cmd:'/avos start', desc:'เริ่มเกม (ปกติ auto-start อยู่แล้ว)', kw:'เริ่ม start ตั้งค่า'},
+  {c:'control', cmd:'/avos stop', desc:'หยุดเกม ลบแกะ', kw:'หยุด stop จบ ตั้งค่า'},
+  {c:'control', cmd:'/avos save', desc:'เซฟ config เดี๋ยวนี้', kw:'เซฟ save บันทึก ตั้งค่า'},
+  {c:'control', cmd:'/avos reload', desc:'โหลด config จากดิสก์ใหม่ (หลังแก้ farm.yml)', kw:'โหลด reload config ตั้งค่า'},
+  {c:'control', cmd:'/avos day', desc:'ตั้งเวลาเป็นกลางวัน', kw:'กลางวัน day เช้า ตั้งค่า'},
+  {c:'control', cmd:'/a', desc:'reload ปลั๊กอิน (แก้บัค เงียบ)', kw:'reload รีโหลด ปลั๊กอิน แก้บัค ตั้งค่า'},
+];
+
+function argify(cmd){ return cmd.replace(/(\s)(\d+|<[^>]+>)/g, '$1<span class="arg">$2</span>'); }
+
+// render quick cards
+for(const k in QUICK){
+  document.getElementById('g-'+k).innerHTML = QUICK[k].map(it=>
+    '<div class="card '+k+'" data-cmd="'+it.cmd+'">'
+    +'<div class="label">'+it.label+'</div>'
+    +'<div class="cmd"><span>'+argify(it.cmd)+'</span><span class="copyic">⧉</span></div></div>'
+  ).join('');
 }
 
-const toast = document.getElementById('toast');
-let toastT;
-function showToast(){
-  toast.classList.add('show');
-  clearTimeout(toastT);
-  toastT = setTimeout(()=>toast.classList.remove('show'), 1300);
+// full list search
+const list=document.getElementById('list'), q=document.getElementById('q'),
+      countEl=document.getElementById('count'), clr=document.getElementById('clr');
+let activeCat='all';
+function esc(s){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+function hl(s,term){ if(!term) return esc(s);
+  const i=s.toLowerCase().indexOf(term.toLowerCase()); if(i<0) return esc(s);
+  return esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+term.length))+'</mark>'+esc(s.slice(i+term.length)); }
+function matches(c,term){
+  if(activeCat!=='all'&&c.c!==activeCat) return false;
+  if(!term) return true;
+  return (c.cmd+' '+(c.arg||'')+' '+c.desc+' '+(c.kw||'')).toLowerCase().includes(term.toLowerCase()); }
+function render(){
+  const term=q.value.trim();
+  const shown=CMDS.filter(c=>matches(c,term));
+  countEl.textContent=shown.length+' คำสั่ง'+(term?(' · "'+term+'"'):'');
+  if(!shown.length){ list.innerHTML='<div class="empty">ไม่พบคำสั่งที่ตรง 🐑</div>'; return; }
+  let html='', cur='';
+  for(const c of shown){
+    if(c.c!==cur){ cur=c.c; html+='<div class="group">'+CATS[c.c]+'</div>'; }
+    html+='<div class="row '+c.c+'" data-cmd="'+c.cmd+'"><div class="rbody">'
+      +'<div class="rcmd">'+hl(c.cmd,term)+(c.arg?' <span class="arg">'+hl(c.arg,term)+'</span>':'')+'</div>'
+      +'<div class="rdesc">'+hl(c.desc,term)+'</div></div><span class="copyic">⧉</span></div>';
+  }
+  list.innerHTML=html;
+  clr.style.display=term?'block':'none';
 }
-document.addEventListener('click', e=>{
-  const card = e.target.closest('.card');
-  if(!card) return;
-  const cmd = card.dataset.cmd;
-  navigator.clipboard?.writeText(cmd).then(showToast, ()=>{
-    // fallback
+q.addEventListener('input',render);
+clr.addEventListener('click',()=>{ q.value=''; render(); q.focus(); });
+document.getElementById('chips').addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  activeCat=chip.dataset.c;
+  [...document.querySelectorAll('.chip')].forEach(c=>c.classList.toggle('on',c===chip));
+  render();
+});
+render();
+
+// ---- copy on tap (cards + rows) ----
+const toast=document.getElementById('toast'); let toastT;
+function showToast(){ toast.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>toast.classList.remove('show'),1300); }
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-cmd]'); if(!el) return;
+  const cmd=el.dataset.cmd;
+  navigator.clipboard?.writeText(cmd).then(showToast,()=>{
     const ta=document.createElement('textarea'); ta.value=cmd; document.body.appendChild(ta);
     ta.select(); try{document.execCommand('copy');}catch(_){} ta.remove(); showToast();
   });
